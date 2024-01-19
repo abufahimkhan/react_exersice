@@ -1,0 +1,267 @@
+// We provided some simple React template code Your goal is to
+// create a functioning Tic Tac Toe game it should work the
+// following way: the first player to go places an X anywhere on the
+// board by clicking a square, and then the next player will be able
+// to place an 0, and it continues alternating like this every tum
+// You should also implement a function to determine if any player
+// won by getting 3 Xs or Os in a diagonal, horizontal, or vertical
+// TOW If there is a winner, display a message at the top If nobody
+// wins, then do not display any message Finally, you should also
+// implement the reset function that resets the entire board You
+// should also not be able to verride the other players move
+// during the game
+// You are free to add classes and styles, but make sure you leave
+// the component IDs and clases provided as they are
+// Submit your code once it is complete and our system will
+// validate your output:
+import React, { useState } from 'react';
+import { createRoot } from 'react-dom/client';
+
+const rowStyle = {
+  display: 'flex'
+};
+
+const squareStyle = {
+  width: '60px',
+  height: '60px',
+  backgroundColor: '#ddd',
+  margin: '4px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  fontSize: '20px',
+  color: 'white'
+};
+
+const boardStyle = {
+  backgroundColor: '#eee',
+  width: '288px',
+  alignItems: 'center',
+  justifyContent: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  border: '3px #eee solid'
+};
+
+const containerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  flexDirection: 'column'
+};
+
+const instructionsStyle = {
+  marginTop: '5px',
+  marginBottom: '5px',
+  fontWeight: 'bold',
+  fontSize: '16px'
+};
+
+const buttonStyle = {
+  marginTop: '15px',
+  width: '100px',
+  height: '40px',
+  marginBottom: '16px',
+  backgroundColor: '#Bacaca',
+  color: 'white',
+  fontSize: '16px'
+};
+
+function Square({ value, onClick }) {
+  return (
+    <div className="square" style={{ ...squareStyle, backgroundColor: value ? '#2196F3' : '#ddd' }} onClick={onClick}>
+      {value}
+    </div>
+  );
+}
+
+function Board() {
+  const [squares, setSquares] = useState(Array(9).fill(null));
+  const [xIsNext, setXIsNext] = useState(true);
+  const winner = calculateWinner(squares);
+
+  const handleClick = (index) => {
+    if (squares[index] || winner) {
+      return; // Do nothing if the square is already filled or the game is won
+    }
+
+    const newSquares = squares.slice();
+    newSquares[index] = xIsNext ? 'X' : 'O';
+    setSquares(newSquares);
+    setXIsNext(!xIsNext);
+  };
+
+  const resetGame = () => {
+    setSquares(Array(9).fill(null));
+    setXIsNext(true);
+  };
+
+  const status = winner ? `Winner: ${winner}` : `Next player: ${xIsNext ? 'X' : 'O'}`;
+
+  return (
+    <div style={containerStyle} className="gameBoard">
+      <div id="statusArea" className="status" style={instructionsStyle}>
+        {status}
+      </div>
+      <button style={buttonStyle} onClick={resetGame}>
+        Reset
+      </button>
+      <div style={boardStyle}>
+        {Array(3)
+          .fill(null)
+          .map((_, rowIndex) => (
+            <div key={rowIndex} className="board-row" style={rowStyle}>
+              {Array(3)
+                .fill(null)
+                .map((_, colIndex) => {
+                  const index = rowIndex * 3 + colIndex;
+                  return <Square key={index} value={squares[index]} onClick={() => handleClick(index)} />;
+                })}
+            </div>
+          ))}
+      </div>
+    </div>
+  );
+}
+
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+
+  for (const line of lines) {
+    const [a, b, c] = line;
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+
+  return null;
+}
+
+function Game() {
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board />
+      </div>
+    </div>
+  );
+}
+
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(<Game />);
+
+
+
+// Front-end Challenge
+// We provided some simple React template code Your goal is to
+// build a weather dashboard application that lets users search for
+// current weather conditions in different cities
+// When the app loads, it should display a search bar where users
+// can type in a citys name Once the city name is entered case-
+// sensitive and the user hits the Search button, the app should
+// fetch and display the current temperature, humidity, and wind
+// speed for the chosen city For simplicity, you dont have to make
+// actual API calls instead, use the predefined data to mimic the
+// weather data for a few cities
+// Additionally, all previously searched cities should be listed
+// below the search bar as buttons When a user clicks on a
+// previously searched city, its weather data should be displayed
+// again
+// Ensure the application handles scenarios where the city is not in
+// your mock data by displaying a message: City not found You
+// are free to add classes and styles, but make sure you leave the
+// component IDs and classes provided as they are Submit your
+// code once it is complete and our system will validate your
+// output
+
+import React, { useState } from 'react';
+import { createRoot } from 'react-dom/client';
+
+function WeatherDashboard() {
+  const [city, setCity] = useState('');
+  const [weatherData, setWeatherData] = useState(null);
+  const [previousSearches, setPreviousSearches] = useState([]);
+
+  const mockWeatherData = {
+    'New York': {
+      temperature: '22°C',
+      humidity: '56%',
+      windSpeed: '15 km/h'
+    },
+    'Los Angeles': {
+      temperature: '27°C',
+      humidity: '45%',
+      windSpeed: '10 km/h'
+    },
+    'London': {
+      temperature: '15°C',
+      humidity: '78%',
+      windSpeed: '28 km/h'
+    }
+  };
+
+  const handleSearch = () => {
+    const cityName = city.trim();
+    if (mockWeatherData.hasOwnProperty(cityName)) {
+      setWeatherData(mockWeatherData[cityName]);
+      if (!previousSearches.includes(cityName)) {
+        setPreviousSearches([...previousSearches, cityName]);
+      }
+    } else {
+      setWeatherData(null);
+    }
+  };
+
+  const handleCityClick = (clickedCity) => {
+    setCity(clickedCity);
+    handleSearch();
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        id="citySearch"
+        placeholder="Search for a city..."
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+      />
+      <button id="searchButton" onClick={handleSearch}>
+        Search
+      </button>
+
+      <div id="weatherData">
+        {weatherData ? (
+          <>
+            <div>Temperature: {weatherData.temperature}</div>
+            <div>Humidity: {weatherData.humidity}</div>
+            <div>Wind Speed: {weatherData.windSpeed}</div>
+          </>
+        ) : (
+          <div>City not found.</div>
+        )}
+      </div>
+
+      <div id="previousSearches">
+        {previousSearches.map((prevCity) => (
+          <button key={prevCity} onClick={() => handleCityClick(prevCity)}>
+            {prevCity}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(<WeatherDashboard />);

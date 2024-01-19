@@ -4,6 +4,7 @@ import ButtonToggle from './ButtonToggle';
 import Counter from './Counter';
 import List from './List';
 import Practice from './Practice';
+import TicTacToe from './TicTacToe';
 // import InformationTable from './InformationTable';
 import PhonebookForm from './PhonebookForm';
 function App() {
@@ -27,6 +28,9 @@ function App() {
           <li>
             <Link to='phonebook'>PhoneBook</Link>
           </li>
+          <li>
+            <Link to='game'>Tic Tac Toe</Link>
+          </li>
           {/* <li>
             <Link path='information'>PhoneBook Info</Link>
           </li> */}
@@ -37,6 +41,7 @@ function App() {
           <Route path='list' element={<List/>}></Route>
           <Route path='exersice' element={<Practice/>}></Route>
           <Route path='phonebook' element={<PhonebookForm/>}></Route>
+          <Route path='game' element={<TicTacToe/>}></Route>
           {/* <Route path="information" element={<InformationTable/>} /> */}
         </Routes>
       </div>
